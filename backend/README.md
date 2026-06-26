@@ -26,7 +26,13 @@ still works.
 | Method | Path | Purpose |
 |--------|------|---------|
 | GET | `/api/health` | Liveness check |
-| GET | `/api/me` | Current employee (SSO stub) |
+| GET | `/api/me` | Current employee + profile (SSO stub) |
+| PATCH | `/api/me` | Update editable profile fields (ICE, allergies) |
+| GET | `/api/packages/mine` | Incoming parcels |
+| POST | `/api/packages/{id}/collect` | Mark a parcel collected |
+| GET | `/api/notifications` | Inbox items (optional `?category=action`) |
+| POST | `/api/notifications/{id}/read` | Mark one read |
+| POST | `/api/notifications/read-all` | Mark all read |
 | GET | `/api/wallet` | Wallet balance |
 | GET | `/api/wallet/transactions` | Recent transactions |
 | POST | `/api/wallet/pay` | Charge the wallet `{merchant, amount_ore}` |

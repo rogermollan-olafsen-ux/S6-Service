@@ -11,7 +11,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from visma_hq_api import __version__
 from visma_hq_api.config import settings
 from visma_hq_api.db import Base, SessionLocal, engine
-from visma_hq_api.routers import lockers, massage, me, rooms, wallet
+from visma_hq_api.routers import (
+    lockers,
+    massage,
+    me,
+    notifications,
+    packages,
+    rooms,
+    wallet,
+)
 from visma_hq_api.seed import seed
 
 
@@ -47,6 +55,10 @@ def create_app() -> FastAPI:
     app.include_router(lockers.router, prefix="/api/lockers", tags=["lockers"])
     app.include_router(massage.router, prefix="/api/massage", tags=["massage"])
     app.include_router(rooms.router, prefix="/api/spaces", tags=["rooms"])
+    app.include_router(packages.router, prefix="/api/packages", tags=["packages"])
+    app.include_router(
+        notifications.router, prefix="/api/notifications", tags=["notifications"]
+    )
 
     @app.get("/api/health", tags=["meta"])
     async def health() -> dict[str, str]:

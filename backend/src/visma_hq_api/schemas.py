@@ -16,6 +16,19 @@ class EmployeeRead(ORMModel):
     name: str
     email: str
     floor: int
+    employee_no: str
+    title: str
+    department: str
+    manager: str
+    emergency_contact: str
+    allergies: str
+
+
+class ProfileUpdate(BaseModel):
+    """Only the employee-owned fields are editable; Org Master data is read-only."""
+
+    emergency_contact: str | None = Field(default=None, max_length=200)
+    allergies: str | None = Field(default=None, max_length=200)
 
 
 class WalletRead(ORMModel):
@@ -67,3 +80,26 @@ class SpaceRead(ORMModel):
     capacity: int
     zone: str
     status: str
+
+
+class PackageRead(ORMModel):
+    id: int
+    description: str
+    carrier: str
+    location_type: str
+    locker_code: str | None
+    pickup_code: str | None
+    status: str
+    arrived_at: datetime
+    collected_at: datetime | None
+
+
+class NotificationRead(ORMModel):
+    id: int
+    source: str
+    category: str
+    title: str
+    body: str
+    target: str
+    created_at: datetime
+    read_at: datetime | None

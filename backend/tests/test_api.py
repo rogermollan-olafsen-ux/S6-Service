@@ -83,3 +83,64 @@ async def test_reserve_desk(client: AsyncClient) -> None:
     r = await client.post(f"/api/spaces/{space_id}/reserve")
     assert r.status_code == 200
     assert r.json()["status"] == "reserved"
+
+
+async def test_me_includes_profile_fields(client: AsyncClient) -> None:
+    r = await client.get("/api/me")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["employee_no"] == "100482"
+    assert data["department"] == "Design & Research"
+    assert data["allergies"]  # seeded
+
+
+async def test_patch_profile_only_editable_fields(client: AsyncClient) -> None:
+    r = await client.patch("/api/me", json={"allergies": "Gluten", "emergency_contact": "Test 999 99 999"})
+    assert r.status_code == 200
+    data = r.json()
+    assert data["allergies"] == "Gluten"
+    assert data["emergency_contact"] == "Test 999 99 999"
+    # read-only Org Master field unchanged
+    assert data["department"] == "Design & Research"
+
+
+async def test_packages_list_and_collect(client: AsyncClient) -> None:
+    r = await client.get("/api/packages/mine")
+    assert r.status_code == 200
+    pkgs = r.json()
+    assert any(p["status"] == "arrived" for p in pkgs)
+    pending = next(p for p in pkgs if p["status"] == "arrived")
+
+    r = await client.post(f"/api/packages/{pending['id']}/collect")
+    assert r.status_code == 200
+    assert r.json()["status"] == "collected"
+
+    # collecting again conflicts
+    r = await client.post(f"/api/packages/{pending['id']}/collect")
+    assert r.status_code == 409
+
+
+async def test_notifications_and_mark_read(client: AsyncClient) -> None:
+    r = await client.get("/api/notifications")
+    assert r.status_code == 200
+    items = r.json()
+    assert items
+    unread = [n for n in items if n["read_at"] is None]
+    assert unread
+
+    nid = unread[0]["id"]
+    r = await client.post(f"/api/notifications/{nid}/read")
+    assert r.status_code == 200
+    assert r.json()["read_at"] is not None
+
+    # filter by category
+    r = await client.get("/api/notifications?category=action")
+    assert r.status_code == 200
+    assert all(n["category"] == "action" for n in r.json())
+
+
+async def test_mark_all_read(client: AsyncClient) -> None:
+    r = await client.post("/api/notifications/read-all")
+    assert r.status_code == 200
+    r = await client.get("/api/notifications")
+    assert all(n["read_at"] is not None for n in r.json())

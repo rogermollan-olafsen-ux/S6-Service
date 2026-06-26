@@ -6,33 +6,37 @@
 <title>Visma HQ · Employee App Mockup</title>
 <style>
   :root{
-    --red:#E60641;        /* Visma red ribbon */
-    --red-dark:#B80434;
-    --ink:#0B0B0F;        /* near-black */
+    /* New Visma brand: white-dominant, Visma Black for structure,
+       Visma Purple used sparingly as an accent only. */
+    --red:#131313;        /* neutral structural accent (kept name; was red) */
+    --red-dark:#000000;   /* darker end for hero gradient */
+    --brand:#7F56FA;      /* Visma Purple — accents only (buttons, badge, dot) */
+    --brand-dark:#5B33E0;
+    --ink:#131313;        /* Visma Black */
     --ink-2:#3A3A44;
     --muted:#8A8A95;
-    --line:#ECECF1;
-    --bg:#F4F4F7;
+    --line:#E3E7EA;       /* cool grey */
+    --bg:#EEF1F3;         /* cool grey light base */
     --card:#FFFFFF;
     --radius:22px;
-    --shadow:0 10px 30px rgba(11,11,15,.08);
-    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --shadow:0 10px 30px rgba(19,19,19,.08);
+    --font:"Helvetica Neue",Helvetica,Arial,"Segoe UI",system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
     font-family:var(--font);
-    background:radial-gradient(1200px 600px at 70% -10%, #fde7ed 0%, #eef0f4 45%, #e7e9ef 100%);
+    background:radial-gradient(1200px 600px at 70% -10%, #E7EBEC 0%, #eef0f4 45%, #e7e9ef 100%);
     color:var(--ink);
     display:flex;flex-direction:column;align-items:center;
     min-height:100vh;padding:32px 16px 56px;
   }
   .pageHead{text-align:center;margin-bottom:22px;max-width:520px}
   .pageHead .logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:.2px}
-  .ribbon{width:26px;height:26px;border-radius:7px;background:var(--red);position:relative;box-shadow:0 4px 12px rgba(230,6,65,.35)}
+  .ribbon{width:26px;height:26px;border-radius:7px;background:var(--brand);position:relative;box-shadow:0 4px 12px rgba(127,86,250,.35)}
   .ribbon::after{content:"";position:absolute;inset:7px 7px auto 7px;height:4px;border-radius:3px;background:#fff;opacity:.9;box-shadow:0 7px 0 #fff}
   .pageHead p{color:var(--ink-2);margin-top:8px;font-size:14px}
-  .pageHead .tag{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-weight:700;background:#fff;border:1px solid #f6cdd8;padding:5px 11px;border-radius:999px}
+  .pageHead .tag{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);font-weight:700;background:#fff;border:1px solid #E3E7EA;padding:5px 11px;border-radius:999px}
 
   /* phone */
   .phone{
@@ -69,14 +73,23 @@
   .name{font-size:24px;font-weight:800;margin-top:2px}
   .balanceCard{
     margin:16px 20px 0;background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);
-    color:#fff;border-radius:var(--radius);padding:18px 20px;box-shadow:0 14px 30px rgba(230,6,65,.30);position:relative;overflow:hidden;
+    color:#fff;border-radius:var(--radius);padding:20px;box-shadow:0 14px 30px rgba(19,19,19,.28);position:relative;overflow:hidden;
   }
-  .balanceCard .glow{position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.14)}
+  .balanceCard .glow{position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
   .balanceCard small{opacity:.85;font-size:12px;font-weight:600;letter-spacing:.04em}
-  .balanceCard .amt{font-size:30px;font-weight:800;margin-top:4px}
-  .balanceCard .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px}
-  .chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:12px;cursor:pointer;transition:.15s}
-  .chip:hover{background:rgba(255,255,255,.30)}
+  .balanceCard .amt{font-size:34px;font-weight:800;margin-top:6px;letter-spacing:-.5px}
+  .balanceCard .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px}
+  .presLabel{display:block;text-align:center;opacity:.8;letter-spacing:.1em;font-size:11px}
+  .presence{position:relative;z-index:1;display:flex;gap:6px;margin-top:12px;background:rgba(255,255,255,.10);border-radius:16px;padding:5px}
+  .presBtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;border:none;background:transparent;color:rgba(255,255,255,.78);font-weight:700;font-size:12px;padding:11px 4px;border-radius:12px;cursor:pointer;transition:.18s;white-space:nowrap}
+  .presBtn .pIco{font-size:20px;line-height:1;filter:grayscale(.2)}
+  .presBtn:hover{color:#fff;background:rgba(255,255,255,.06)}
+  .presBtn.on{background:#fff;color:var(--ink);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+  .presBtn.on .pIco{filter:none}
+  .calSync{font-size:12px;opacity:.8;display:flex;justify-content:center;align-items:center;gap:7px;margin-top:14px}
+  .calDot{width:7px;height:7px;border-radius:50%;background:#34C759;flex-shrink:0}
+  .chip{background:var(--brand);border:none;color:#fff;font-size:12px;font-weight:700;padding:9px 14px;border-radius:12px;cursor:pointer;transition:.15s}
+  .chip:hover{background:var(--brand-dark)}
 
   .sectionTitle{font-size:13px;font-weight:700;color:var(--ink-2);margin:22px 20px 12px;letter-spacing:.02em}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px}
@@ -86,7 +99,7 @@
   }
   .tile:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(11,11,15,.12)}
   .tile:active{transform:translateY(0)}
-  .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:#fde7ed;color:var(--red);margin-bottom:12px}
+  .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:#E7EBEC;color:var(--red);margin-bottom:12px}
   .tile h3{font-size:15px;font-weight:700}
   .tile p{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
   .tile .stat{margin-top:10px;font-size:12px;font-weight:700;color:var(--red)}
@@ -99,14 +112,14 @@
 
   /* ---------- generic cards ---------- */
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
-  .bigBtn{width:100%;border:none;background:var(--red);color:#fff;font-weight:800;font-size:16px;padding:16px;border-radius:16px;cursor:pointer;transition:.15s;box-shadow:0 10px 22px rgba(230,6,65,.30)}
-  .bigBtn:hover{background:var(--red-dark)}
-  .bigBtn.ghost{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:none}
+  .bigBtn{width:100%;border:none;background:var(--brand);color:#fff;font-weight:800;font-size:16px;padding:16px;border-radius:16px;cursor:pointer;transition:.15s;box-shadow:0 10px 22px rgba(127,86,250,.30)}
+  .bigBtn:hover{background:var(--brand-dark)}
+  .bigBtn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand);box-shadow:none}
   .bigBtn:disabled{background:#d7d7e0;color:#fff;box-shadow:none;cursor:default}
 
   .txn{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
   .txn:last-child{border-bottom:none}
-  .txn .ti{width:40px;height:40px;border-radius:12px;background:#fde7ed;color:var(--red);display:grid;place-items:center;font-size:17px}
+  .txn .ti{width:40px;height:40px;border-radius:12px;background:#E7EBEC;color:var(--red);display:grid;place-items:center;font-size:17px}
   .txn .tinfo{flex:1}
   .txn .tinfo b{font-size:14px;font-weight:700}
   .txn .tinfo small{font-size:11px;color:var(--muted)}
@@ -114,7 +127,7 @@
 
   /* pay sheet */
   .paySheet{text-align:center;padding:10px 0}
-  .nfc{width:120px;height:120px;border-radius:50%;margin:8px auto 16px;background:#fde7ed;display:grid;place-items:center;font-size:46px;color:var(--red);position:relative}
+  .nfc{width:120px;height:120px;border-radius:50%;margin:8px auto 16px;background:#E7EBEC;display:grid;place-items:center;font-size:46px;color:var(--red);position:relative}
   .nfc::before,.nfc::after{content:"";position:absolute;border:3px solid var(--red);border-radius:50%;opacity:0;animation:pulse 2s infinite}
   .nfc::before{inset:-12px;animation-delay:.2s}
   .nfc::after{inset:-26px;animation-delay:.6s}
@@ -123,16 +136,16 @@
   /* locker */
   .lockerVisual{display:flex;justify-content:center;gap:8px;margin:6px 0 4px}
   .lk{width:44px;height:60px;border-radius:8px;background:#ececf1;border:2px solid #dcdce3;position:relative}
-  .lk.mine{background:#fde7ed;border-color:var(--red)}
+  .lk.mine{background:#E7EBEC;border-color:var(--red)}
   .lk::after{content:"";position:absolute;right:6px;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:#b9b9c4}
   .lk.mine::after{background:var(--red)}
   .statusPill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:7px 13px;border-radius:999px;background:#eafaf0;color:#108a4b}
-  .statusPill.locked{background:#fdeef0;color:var(--red)}
+  .statusPill.locked{background:#ECEFF1;color:var(--red)}
   .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
 
   /* massage / rooms slots */
   .slot{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer;transition:.15s;background:#fff}
-  .slot:hover{border-color:var(--red);background:#fff8fa}
+  .slot:hover{border-color:var(--red);background:#F4F6F8}
   .slot.taken{opacity:.45;cursor:not-allowed;background:var(--bg)}
   .slot .time{font-weight:800;font-size:15px;width:64px}
   .slot .meta{flex:1;font-size:12px;color:var(--muted)}
@@ -152,10 +165,59 @@
   .nav{position:absolute;bottom:0;left:0;right:0;height:76px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;padding-bottom:8px;z-index:50}
   .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;width:64px}
   .nav button .nic{font-size:20px}
-  .nav button.on{color:var(--red)}
+  .nav button.on{color:var(--brand)}
 
   .hint{max-width:390px;text-align:center;color:var(--ink-2);font-size:12.5px;margin-top:20px;line-height:1.5}
   .hint b{color:var(--red)}
+
+  /* ---- hero header (greeting + avatar + inbox bell) ---- */
+  .heroTop{display:flex;align-items:center;gap:12px;padding:6px 20px 0}
+  .heroTop .who{flex:1;cursor:pointer}
+  .avatar{position:relative;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;cursor:pointer;flex-shrink:0}
+  .avatar .cog{position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:grid;place-items:center;font-size:10px;line-height:1;color:var(--ink);box-shadow:0 1px 3px rgba(19,19,19,.18)}
+  .bell{position:relative;width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:20px;cursor:pointer;flex-shrink:0}
+  .bell .badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--brand);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;border:2px solid #fff}
+
+  /* ---- Min Side (profile) ---- */
+  .profTop{display:flex;align-items:center;gap:14px}
+  .profTop .big{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff;display:grid;place-items:center;font-weight:800;font-size:24px}
+  .profTop h3{font-size:20px;font-weight:800}
+  .profTop p{font-size:13px;color:var(--muted)}
+  .field{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .field:last-child{border-bottom:none}
+  .field .k{font-size:12px;color:var(--muted);font-weight:600}
+  .field .v{font-size:14px;font-weight:600;text-align:right}
+  .field .v.editable{color:var(--brand)}
+  .srcTag{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;margin-top:2px}
+  .editInput{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;margin-top:6px}
+
+  /* ---- packages ---- */
+  .pkg{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+  .pkg:last-child{border-bottom:none}
+  .pkg .pic{width:44px;height:44px;border-radius:12px;background:#E7EBEC;color:var(--red);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+  .pkg .pinfo{flex:1}
+  .pkg .pinfo b{font-size:14px;font-weight:700;display:block}
+  .pkg .pinfo small{font-size:12px;color:var(--muted)}
+  .pkg .codeBox{font-weight:800;font-size:15px;letter-spacing:2px;color:var(--red);background:#E7EBEC;padding:6px 10px;border-radius:10px}
+  .pkg.done{opacity:.5}
+  .qrBox{width:120px;height:120px;margin:4px auto 0;border-radius:14px;background:repeating-conic-gradient(#0b0b0f 0 25%, #fff 0 50%) 50%/16px 16px;border:6px solid #fff;box-shadow:0 0 0 1px var(--line)}
+
+  /* ---- inbox ---- */
+  .seg-row{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+  .inboxItem{display:flex;gap:12px;align-items:flex-start;padding:14px 12px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer;background:#fff;transition:.15s}
+  .inboxItem:hover{border-color:var(--red)}
+  .inboxItem.unread{background:#F4F6F8;border-color:#E3E7EA}
+  .inboxItem .ii{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:#E7EBEC;color:var(--red);flex-shrink:0}
+  .inboxItem .ibody{flex:1}
+  .inboxItem .ibody b{font-size:14px;font-weight:700}
+  .inboxItem .ibody p{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+  .inboxItem .ibody small{font-size:11px;color:var(--muted)}
+  .inboxItem .udot{width:9px;height:9px;border-radius:50%;background:var(--brand);margin-top:6px;flex-shrink:0}
+  .emptyState{text-align:center;color:var(--muted);font-size:13px;padding:40px 0}
+
+  /* ---- parking ---- */
+  .plate{font-family:"Courier New",monospace;font-weight:800;font-size:20px;letter-spacing:2px;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:8px 14px;color:var(--ink);position:relative;padding-left:22px}
+  .plate::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#1450C8;border-radius:6px 0 0 6px}
 </style>
 </head>
 <body>
@@ -178,19 +240,24 @@
 
       <!-- ============ HOME ============ -->
       <section class="view active" id="home">
-        <div class="hero">
-          <div class="hello">Good morning</div>
-          <div class="name">Roger 👋</div>
+        <div class="heroTop">
+          <div class="avatar" onclick="go('minside')">RM<span class="cog">⚙︎</span></div>
+          <div class="who" onclick="go('minside')">
+            <div class="hello">Good morning</div>
+            <div class="name">Roger 👋</div>
+          </div>
+          <div class="bell" onclick="go('innboks')">🔔<span class="badge" id="bellBadge">2</span></div>
         </div>
 
-        <div class="balanceCard" onclick="go('pay')">
+        <div class="balanceCard">
           <div class="glow"></div>
-          <small>HQ WALLET BALANCE</small>
-          <div class="amt" id="balanceHome">kr 248,00</div>
-          <div class="row">
-            <span style="font-size:12px;opacity:.9">Floor 6 · Oslo HQ</span>
-            <span class="chip" onclick="event.stopPropagation();go('pay')">Tap to pay →</span>
+          <small class="presLabel">WHERE ARE YOU TODAY?</small>
+          <div class="presence">
+            <button class="presBtn" id="presHome" onclick="setPresence('home')"><span class="pIco">🏠</span>Hjemme</button>
+            <button class="presBtn on" id="presOffice" onclick="setPresence('office')"><span class="pIco">🏢</span>Kontor</button>
+            <button class="presBtn" id="presTravel" onclick="setPresence('travel')"><span class="pIco">✈️</span>Reise</button>
           </div>
+          <div class="calSync"><span class="calDot"></span>Google Calendar · <span id="presNote">«Kontor»</span></div>
         </div>
 
         <div class="sectionTitle">Services</div>
@@ -208,16 +275,28 @@
             <div class="stat">Locker B-114</div>
           </button>
           <button class="tile" onclick="go('massage')">
-            <div class="ic">💆</div>
-            <h3>Massage</h3>
-            <p>Book the in-house therapist</p>
-            <div class="stat">3 slots today</div>
+            <div class="ic">🧘</div>
+            <h3>Health &amp; Wellness</h3>
+            <p>Classes &amp; treatments</p>
+            <div class="stat">4 classes · 3 treatments today</div>
           </button>
           <button class="tile" onclick="go('rooms')">
             <div class="ic">🪑</div>
             <h3>Rooms & Desks</h3>
             <p>Reserve a space</p>
             <div class="stat">12 desks free</div>
+          </button>
+          <button class="tile" onclick="go('pakker')">
+            <div class="ic">📦</div>
+            <h3>Packages</h3>
+            <p>Parcels waiting for you</p>
+            <div class="stat" id="pkgStat">1 ready to collect</div>
+          </button>
+          <button class="tile" onclick="go('parking')">
+            <div class="ic">🅿️</div>
+            <h3>Parking</h3>
+            <p>Bike &amp; car</p>
+            <div class="stat">Car: EL 34921</div>
           </button>
         </div>
 
@@ -229,8 +308,8 @@
             <span>Soon</span>
           </div>
           <div class="soonCard" style="margin-top:10px">
-            <div class="ic">🚲</div>
-            <div><h3>Bike & parking spots</h3></div>
+            <div class="ic">🍃</div>
+            <div><h3>Sustainability & CO₂ dashboard</h3></div>
             <span>Soon</span>
           </div>
         </div>
@@ -296,18 +375,33 @@
       <section class="view" id="massage">
         <div class="appbar">
           <div class="back" onclick="go('home')">‹</div>
-          <div><h2>Book Massage</h2><div class="sub">Wellness room · Floor 6</div></div>
+          <div><h2>Health &amp; Wellness</h2><div class="sub">Classes &amp; treatments · Floor 6</div></div>
         </div>
         <div class="body">
+          <div class="seg-row" style="margin-bottom:12px">
+            <div class="seg on" id="wellClasses" onclick="switchWellness('classes')">🏋️ Classes</div>
+            <div class="seg" id="wellTreat" onclick="switchWellness('treatments')">💆 Treatments</div>
+          </div>
           <div class="segment">
             <div class="seg on">Today</div><div class="seg">Thu 27</div><div class="seg">Fri 28</div><div class="seg">Mon 30</div>
           </div>
-          <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Anna · Certified therapist · 25 min sessions</p>
-          <div id="massageSlots">
-          <div class="slot taken"><div class="time">10:00</div><div class="meta"><b>Booked</b>Unavailable</div></div>
-          <div class="slot" onclick="book(this,'Massage 13:00')"><div class="time">13:00</div><div class="meta"><b>25 min · Deep tissue</b>Wellness room</div><div class="pickBtn">Book →</div></div>
-          <div class="slot" onclick="book(this,'Massage 13:30')"><div class="time">13:30</div><div class="meta"><b>25 min · Relax</b>Wellness room</div><div class="pickBtn">Book →</div></div>
-          <div class="slot" onclick="book(this,'Massage 15:00')"><div class="time">15:00</div><div class="meta"><b>25 min · Deep tissue</b>Wellness room</div><div class="pickBtn">Book →</div></div>
+
+          <!-- Training classes (Kickstart) -->
+          <div id="classList">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Kickstart studio · Floor 6 · group classes</p>
+            <div class="slot" onclick="book(this,'Morning HIIT 07:00')"><div class="time">07:00</div><div class="meta"><b>Morning HIIT · Kickstart</b>45 min · Markus · 4 spots left</div><div class="pickBtn">Book →</div></div>
+            <div class="slot" onclick="book(this,'Yoga 12:00')"><div class="time">12:00</div><div class="meta"><b>Yoga Flow</b>30 min · Sofie · 8 spots left</div><div class="pickBtn">Book →</div></div>
+            <div class="slot taken"><div class="time">16:30</div><div class="meta"><b>Spinning · Full</b>45 min · join waitlist</div></div>
+            <div class="slot" onclick="book(this,'Strength 17:30')"><div class="time">17:30</div><div class="meta"><b>Strength &amp; Core</b>45 min · Markus · 6 spots left</div><div class="pickBtn">Book →</div></div>
+          </div>
+
+          <!-- Treatments (massage etc.) -->
+          <div id="treatmentList" style="display:none">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Anna · Certified therapist · 25 min sessions</p>
+            <div class="slot taken"><div class="time">10:00</div><div class="meta"><b>Booked</b>Unavailable</div></div>
+            <div class="slot" onclick="book(this,'Massage 13:00')"><div class="time">13:00</div><div class="meta"><b>Massage · Deep tissue</b>25 min · Wellness room</div><div class="pickBtn">Book →</div></div>
+            <div class="slot" onclick="book(this,'Massage 13:30')"><div class="time">13:30</div><div class="meta"><b>Massage · Relax</b>25 min · Wellness room</div><div class="pickBtn">Book →</div></div>
+            <div class="slot" onclick="book(this,'Physio 15:00')"><div class="time">15:00</div><div class="meta"><b>Physiotherapy</b>30 min · Wellness room</div><div class="pickBtn">Book →</div></div>
           </div>
         </div>
       </section>
@@ -332,6 +426,159 @@
         </div>
       </section>
 
+      <!-- ============ PARKING ============ -->
+      <section class="view" id="parking">
+        <div class="appbar">
+          <div class="back" onclick="go('home')">‹</div>
+          <div><h2>Parking</h2><div class="sub">Oslo HQ</div></div>
+        </div>
+        <div class="body">
+          <div class="seg-row" style="margin-bottom:14px">
+            <div class="seg on" id="parkBike" onclick="switchParking('bike')">🚲 Bike</div>
+            <div class="seg" id="parkCar" onclick="switchParking('car')">🚗 Car</div>
+          </div>
+
+          <!-- BIKE: availability only -->
+          <div id="parkBikeView">
+            <div class="card">
+              <div class="field"><span class="k">Bike room B1 · Indoor, secured</span><span class="v">12 / 40 free</span></div>
+              <div class="field"><span class="k">Bike room B2 · Indoor, secured</span><span class="v">5 / 30 free</span></div>
+              <div class="field"><span class="k">Outdoor racks · Main entrance</span><span class="v">Plenty</span></div>
+              <div class="field"><span class="k">E-bike charging · B1</span><span class="v">2 / 6 free</span></div>
+            </div>
+            <p class="srcTag" style="padding:0 4px">🚲 Live availability · no booking needed — just park</p>
+          </div>
+
+          <!-- CAR: enrolled state + EV + registration -->
+          <div id="parkCarView" style="display:none">
+            <div class="card">
+              <div class="profTop">
+                <div class="plate">EL 34921</div>
+                <div><h3 style="font-size:16px">Your car</h3><p style="font-size:12px;color:var(--muted)">Registered vehicle</p></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="field"><span class="k">Parking scheme</span><span class="v"><span class="statusPill"><span class="dot"></span> Member</span></span></div>
+              <div class="field"><span class="k">Assigned area</span><span class="v">Level P2 · Zone B</span></div>
+              <div class="field"><span class="k">Access</span><span class="v">Plate recognition</span></div>
+              <button class="bigBtn ghost" style="margin-top:14px" onclick="toast('Manage your registered plates')">Manage plates</button>
+            </div>
+
+            <div class="sectionTitle" style="margin:6px 0 8px">EV charging</div>
+            <div class="card">
+              <div class="field"><span class="k">Level P2 chargers</span><span class="v">3 / 8 free</span></div>
+              <div class="field"><span class="k">Your session</span><span class="v">Not charging</span></div>
+            </div>
+
+            <div class="sectionTitle" style="margin:14px 0 8px">Register another car</div>
+            <div class="card">
+              <p style="font-size:12.5px;color:var(--ink-2);margin-bottom:10px">Car parking requires membership in the building's parking scheme. Add your licence plate to enrol.</p>
+              <input class="editInput" placeholder="e.g. EL 34921" aria-label="Licence plate">
+              <button class="bigBtn" style="margin-top:12px" onclick="toast('Car registered · pending approval')">Register &amp; join scheme</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ MIN SIDE (My Page) ============ -->
+      <section class="view" id="minside">
+        <div class="appbar">
+          <div class="back" onclick="go('home')">‹</div>
+          <div><h2>My Page</h2><div class="sub">Your profile</div></div>
+        </div>
+        <div class="body">
+          <div class="card">
+            <div class="profTop">
+              <div class="big">RM</div>
+              <div><h3>Roger Mollan-Olafsen</h3><p>UX Designer · Design &amp; Research</p></div>
+            </div>
+          </div>
+
+          <div class="sectionTitle" style="margin:6px 0 8px">From Visma Organisation Master</div>
+          <div class="card">
+            <div class="field"><span class="k">Employee no.</span><span class="v">100482</span></div>
+            <div class="field"><span class="k">Department</span><span class="v">Design &amp; Research</span></div>
+            <div class="field"><span class="k">Manager</span><span class="v">Kari Nordmann</span></div>
+            <div class="field"><span class="k">Office</span><span class="v">Oslo HQ · Floor 6</span></div>
+            <div class="field"><span class="k">Email</span><span class="v" style="font-size:12px">roger.mollan-olafsen@visma.com</span></div>
+            <div class="srcTag">🔒 Read-only · synced from Org Master</div>
+          </div>
+
+          <div class="sectionTitle" style="margin:14px 0 8px">My details <span style="color:var(--muted);font-weight:500">(editable)</span></div>
+          <div class="card">
+            <div class="field"><span class="k">Emergency contact (ICE)</span><span class="v editable" id="iceVal">Mari M-O · 412 33 221</span></div>
+            <div class="field"><span class="k">Allergies</span><span class="v editable" id="allergyVal">Nuts, lactose</span></div>
+            <button class="bigBtn ghost" style="margin-top:14px" onclick="editProfile()">Edit my details</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PACKAGES ============ -->
+      <section class="view" id="pakker">
+        <div class="appbar">
+          <div class="back" onclick="go('home')">‹</div>
+          <div><h2>Packages</h2><div class="sub">Incoming parcels</div></div>
+        </div>
+        <div class="body">
+          <div class="card" id="pkgList">
+            <div class="pkg">
+              <div class="pic">📦</div>
+              <div class="pinfo"><b>PostNord parcel</b><small>Arrived 09:12 · Smart locker P-07</small></div>
+              <div class="codeBox">4192</div>
+            </div>
+            <div class="pkg">
+              <div class="pic">📮</div>
+              <div class="pinfo"><b>Letter · signed for</b><small>Arrived 08:40 · Reception desk</small></div>
+              <div class="pickBtn" style="font-weight:700;color:var(--red);cursor:pointer" onclick="showQr(this)">Show QR →</div>
+            </div>
+            <div class="pkg done">
+              <div class="pic">✅</div>
+              <div class="pinfo"><b>Amazon parcel</b><small>Collected yesterday · 16:22</small></div>
+            </div>
+          </div>
+          <div class="card" id="qrCard" style="display:none;text-align:center">
+            <b style="font-size:14px">Show at reception</b>
+            <div class="qrBox"></div>
+            <p style="font-size:12px;color:var(--muted);margin-top:10px">Pickup code: <b style="color:var(--red)">R-100482</b></p>
+          </div>
+          <p class="srcTag" style="padding:0 4px">📦 Smart-locker parcels open with the code · desk items need the QR</p>
+        </div>
+      </section>
+
+      <!-- ============ INBOX ============ -->
+      <section class="view" id="innboks">
+        <div class="appbar">
+          <div class="back" onclick="go('home')">‹</div>
+          <div><h2>Inbox</h2><div class="sub">All your notifications</div></div>
+        </div>
+        <div class="body">
+          <div class="seg-row">
+            <div class="seg on">All</div><div class="seg">Action needed</div><div class="seg">Info</div>
+          </div>
+          <div id="inboxList">
+            <div class="inboxItem unread" onclick="openInbox(this,'pakker')">
+              <div class="ii">📦</div>
+              <div class="ibody"><b>Parcel ready to collect</b><p>PostNord parcel in smart locker P-07. Code 4192.</p><small>Packages · 9 min ago</small></div>
+              <div class="udot"></div>
+            </div>
+            <div class="inboxItem unread" onclick="openInbox(this,'massage')">
+              <div class="ii">💆</div>
+              <div class="ibody"><b>Massage reminder</b><p>Your session is today at 13:00 in the wellness room.</p><small>Wellness · 1 h ago</small></div>
+              <div class="udot"></div>
+            </div>
+            <div class="inboxItem" onclick="openInbox(this,'pay')">
+              <div class="ii">💳</div>
+              <div class="ibody"><b>Payment receipt</b><p>kr 39,00 at Barista Bar.</p><small>Pay · today 08:32</small></div>
+            </div>
+            <div class="inboxItem" onclick="openInbox(this,'locker')">
+              <div class="ii">🔐</div>
+              <div class="ibody"><b>Locker unlocked</b><p>Locker B-114 was opened.</p><small>Lockers · today 08:30</small></div>
+            </div>
+          </div>
+          <div class="emptyState" id="inboxEmpty" style="display:none">You're all caught up 🎉</div>
+        </div>
+      </section>
+
       <!-- toast -->
       <div class="toast" id="toast"><div class="ok">✓</div><span id="toastMsg">Done</span></div>
 
@@ -340,7 +587,7 @@
         <button class="on" id="nav-home" onclick="go('home')"><span class="nic">🏠</span>Home</button>
         <button id="nav-pay" onclick="go('pay')"><span class="nic">💳</span>Pay</button>
         <button id="nav-locker" onclick="go('locker')"><span class="nic">🔐</span>Locker</button>
-        <button id="nav-massage" onclick="go('massage')"><span class="nic">💆</span>Wellness</button>
+        <button id="nav-massage" onclick="go('massage')"><span class="nic">🧘</span>Wellness</button>
       </div>
 
     </div>
@@ -350,7 +597,7 @@
 
 <script>
   /* ---------------- navigation ---------------- */
-  const views = ['home','pay','locker','massage','rooms'];
+  const views = ['home','pay','locker','massage','rooms','minside','pakker','innboks','parking'];
   function go(id){
     views.forEach(v=>document.getElementById(v).classList.toggle('active', v===id));
     document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
@@ -401,9 +648,9 @@
   }
 
   function setBalance(ore){
-    document.getElementById('balanceHome').textContent = kr(ore);
-    document.getElementById('balancePay').textContent = kr(ore);
-    document.getElementById('payStat').textContent = kr(ore) + ' available';
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+    set('balancePay', kr(ore));
+    set('payStat', kr(ore) + ' available');
   }
 
   const TXN_ICON = { payment:'💳', topup:'＋' };
@@ -433,7 +680,9 @@
   }
 
   function renderMassage(slots){
-    document.getElementById('massageSlots').innerHTML = slots.map(s=>{
+    const host = document.getElementById('treatmentList');
+    if(!host) return;
+    host.innerHTML = slots.map(s=>{
       if(s.status==='booked') return `<div class="slot taken"><div class="time">${s.start_time}</div><div class="meta"><b>Booked</b>Unavailable</div></div>`;
       return `<div class="slot" onclick="bookSlot(${s.id}, this, '${s.start_time}')"><div class="time">${s.start_time}</div>
         <div class="meta"><b>${s.duration_min} min · ${esc(s.kind)}</b>Wellness room</div><div class="pickBtn">Book →</div></div>`;
@@ -500,6 +749,77 @@
     toast('Locker '+myLocker.code+' '+myLocker.state);
   }
 
+  /* ---- Min Side: edit the user-owned fields ---- */
+  function editProfile(){
+    const ice = prompt('Emergency contact (ICE):', document.getElementById('iceVal').textContent);
+    if(ice !== null && ice.trim()) document.getElementById('iceVal').textContent = ice.trim();
+    const al = prompt('Allergies:', document.getElementById('allergyVal').textContent);
+    if(al !== null) document.getElementById('allergyVal').textContent = al.trim() || 'None';
+    if(LIVE){ api('/api/me', {method:'PATCH', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({emergency_contact:document.getElementById('iceVal').textContent, allergies:document.getElementById('allergyVal').textContent})}).catch(()=>{}); }
+    toast('Details updated');
+  }
+
+  /* ---- Packages ---- */
+  function showQr(el){
+    const card = document.getElementById('qrCard');
+    card.style.display = 'block';
+    card.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  /* ---- Inbox: read state + bell badge ---- */
+  function updateBadge(){
+    const unread = document.querySelectorAll('#inboxList .inboxItem.unread').length;
+    const badge = document.getElementById('bellBadge');
+    badge.style.display = unread ? 'grid' : 'none';
+    badge.textContent = unread;
+    document.getElementById('inboxEmpty').style.display =
+      document.querySelectorAll('#inboxList .inboxItem').length ? 'none' : 'block';
+  }
+  function openInbox(el, target){
+    if(el.classList.contains('unread')){
+      el.classList.remove('unread');
+      const dot = el.querySelector('.udot'); if(dot) dot.remove();
+      updateBadge();
+    }
+    if(target) go(target);
+  }
+
+  /* ---- Health & Wellness: switch Classes / Treatments ---- */
+  function switchWellness(cat){
+    const isClasses = cat === 'classes';
+    document.getElementById('classList').style.display = isClasses ? 'block' : 'none';
+    document.getElementById('treatmentList').style.display = isClasses ? 'none' : 'block';
+    document.getElementById('wellClasses').classList.toggle('on', isClasses);
+    document.getElementById('wellTreat').classList.toggle('on', !isClasses);
+  }
+
+  /* ---- Work location (synced with Google Calendar) ---- */
+  let presence = 'office';   // default reflects today's "Kontor" calendar event
+  const PRESENCE = {
+    home:   { event: '«Hjemmekontor»', msg: 'Hjemmekontor' },
+    office: { event: '«Kontor»',       msg: 'På kontoret' },
+    travel: { event: '«På reise»',     msg: 'På reise' },
+  };
+  function setPresence(p){
+    presence = p;
+    document.getElementById('presHome').classList.toggle('on', p === 'home');
+    document.getElementById('presOffice').classList.toggle('on', p === 'office');
+    document.getElementById('presTravel').classList.toggle('on', p === 'travel');
+    document.getElementById('presNote').textContent = PRESENCE[p].event;
+    toast(PRESENCE[p].msg + ' i dag — oppdatert i Google Calendar');
+  }
+
+  /* ---- Parking: switch Bike / Car ---- */
+  function switchParking(mode){
+    const isBike = mode === 'bike';
+    document.getElementById('parkBikeView').style.display = isBike ? 'block' : 'none';
+    document.getElementById('parkCarView').style.display = isBike ? 'none' : 'block';
+    document.getElementById('parkBike').classList.toggle('on', isBike);
+    document.getElementById('parkCar').classList.toggle('on', !isBike);
+  }
+
+  updateBadge();
   hydrate();
 </script>
 </body>
