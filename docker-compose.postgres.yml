@@ -1,0 +1,30 @@
+# Postgres override. Use alongside the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.postgres.yml up --build
+#
+# Runs the API against a Postgres container instead of SQLite. Postgres data
+# persists in its own named volume; the API waits for the DB to be healthy.
+services:
+  api:
+    environment:
+      VISMA_HQ_DATABASE_URL: postgresql+asyncpg://visma:visma@db:5432/visma_hq
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: visma
+      POSTGRES_PASSWORD: visma
+      POSTGRES_DB: visma_hq
+    volumes:
+      - visma_hq_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U visma -d visma_hq"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  visma_hq_pg:

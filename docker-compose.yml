@@ -1,0 +1,21 @@
+# Local run and internal/self-hosted deployment (e.g. a Visma HQ server).
+#   docker compose up --build      → API at http://localhost:8000  (docs at /docs)
+#
+# The SQLite database is kept in a named volume so it survives `down`/`up`.
+# For a shared production instance, switch to Postgres by setting
+# VISMA_HQ_DATABASE_URL to a postgresql+asyncpg:// DSN and add a db service.
+services:
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      VISMA_HQ_DATABASE_URL: sqlite+aiosqlite:////app/data/visma_hq.db
+      # CORS: lock this to real origins before exposing publicly.
+      # VISMA_HQ_CORS_ORIGINS: '["https://visma.github.io"]'
+    volumes:
+      - visma_hq_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  visma_hq_data:
