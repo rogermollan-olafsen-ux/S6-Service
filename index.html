@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Visma HQ · Employee App Mockup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Visma House">
+<meta name="theme-color" content="#EEF1F3">
+<title>Visma House Oslo · Employee App</title>
 <style>
   :root{
     /* New Visma brand: white-dominant, Visma Black for structure,
@@ -66,6 +71,10 @@
   /* views */
   .view{display:none;flex-direction:column;height:100%}
   .view.active{display:flex}
+  /* Home has no .body wrapper, so make the section itself scroll and stop its
+     children from being squeezed (which clipped the balance/status card). */
+  #home.active{overflow-y:auto;padding-bottom:90px}
+  #home > *{flex-shrink:0}
 
   /* ---------- HOME ---------- */
   .hero{padding:6px 20px 0}
@@ -80,6 +89,12 @@
   .balanceCard .amt{font-size:34px;font-weight:800;margin-top:6px;letter-spacing:-.5px}
   .balanceCard .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px}
   .presLabel{display:block;text-align:center;opacity:.8;letter-spacing:.1em;font-size:11px}
+  .presHeader{cursor:pointer}
+  .presSummary{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:6px;font-weight:800;font-size:16px}
+  .presSummary .presChevron{opacity:.65;font-size:13px;font-weight:700}
+  .presBody{display:none;margin-top:2px}
+  #statusCard.expanded .presBody{display:block}
+  #statusCard.expanded .presSummary{display:none}
   .presence{position:relative;z-index:1;display:flex;gap:6px;margin-top:12px;background:rgba(255,255,255,.10);border-radius:16px;padding:5px}
   .presBtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;border:none;background:transparent;color:rgba(255,255,255,.78);font-weight:700;font-size:12px;padding:11px 4px;border-radius:12px;cursor:pointer;transition:.18s;white-space:nowrap}
   .presBtn .pIco{font-size:20px;line-height:1;filter:grayscale(.2)}
@@ -218,14 +233,23 @@
   /* ---- parking ---- */
   .plate{font-family:"Courier New",monospace;font-weight:800;font-size:20px;letter-spacing:2px;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:8px 14px;color:var(--ink);position:relative;padding-left:22px}
   .plate::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#1450C8;border-radius:6px 0 0 6px}
+
+  /* ---- Phone / web-app mode: fill the screen, drop the desktop frame ---- */
+  @media (max-width:480px){
+    body{padding:0;background:var(--bg)}
+    .pageHead,.hint{display:none}
+    .phone{width:100%;max-width:100%;height:100vh;height:100dvh;padding:0;border-radius:0;box-shadow:none;background:var(--bg)}
+    .screen{border-radius:0;height:100vh;height:100dvh}
+    .notch{display:none}
+    .status{padding-top:calc(14px + env(safe-area-inset-top))}
+    .nav{padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+  }
 </style>
 </head>
 <body>
 
   <div class="pageHead">
-    <div class="logo"><span class="ribbon"></span> Visma</div>
-    <p>HQ Employee App — interactive concept mockup</p>
-    <span class="tag">Clickable Prototype · v0.1</span>
+    <div class="logo"><span class="ribbon"></span> Visma House Oslo</div>
     <span class="tag" id="liveTag" style="display:none;background:#eafaf0;color:#108a4b;border-color:#bfe9cf;margin-left:6px">● Live · connected to API</span>
   </div>
 
@@ -249,18 +273,23 @@
           <div class="bell" onclick="go('innboks')">🔔<span class="badge" id="bellBadge">2</span></div>
         </div>
 
-        <div class="balanceCard">
+        <div class="balanceCard statusCard" id="statusCard">
           <div class="glow"></div>
-          <small class="presLabel">WHERE ARE YOU TODAY?</small>
-          <div class="presence">
-            <button class="presBtn" id="presHome" onclick="setPresence('home')"><span class="pIco">🏠</span>Hjemme</button>
-            <button class="presBtn on" id="presOffice" onclick="setPresence('office')"><span class="pIco">🏢</span>Kontor</button>
-            <button class="presBtn" id="presTravel" onclick="setPresence('travel')"><span class="pIco">✈️</span>Reise</button>
+          <div class="presHeader" onclick="toggleStatusCard()">
+            <small class="presLabel">WHERE ARE YOU TODAY?</small>
+            <div class="presSummary"><span id="presSumIco">🏢</span> <span id="presSumTxt">På kontoret</span> <span class="presChevron">⌄</span></div>
           </div>
-          <div class="calSync"><span class="calDot"></span>Google Calendar · <span id="presNote">«Kontor»</span></div>
+          <div class="presBody">
+            <div class="presence">
+              <button class="presBtn" id="presHome" onclick="setPresence('home')"><span class="pIco">🏠</span>Hjemme</button>
+              <button class="presBtn on" id="presOffice" onclick="setPresence('office')"><span class="pIco">🏢</span>Kontor</button>
+              <button class="presBtn" id="presTravel" onclick="setPresence('travel')"><span class="pIco">✈️</span>Reise</button>
+            </div>
+            <div class="calSync"><span class="calDot"></span>Google Calendar · <span id="presNote">«Kontor»</span></div>
+          </div>
         </div>
 
-        <div class="sectionTitle">Services</div>
+        <div class="sectionTitle">Services for Visma House Oslo</div>
         <div class="grid">
           <button class="tile" onclick="go('pay')">
             <div class="ic">💳</div>
@@ -297,6 +326,12 @@
             <h3>Parking</h3>
             <p>Bike &amp; car</p>
             <div class="stat">Car: EL 34921</div>
+          </button>
+          <button class="tile" onclick="go('appinfo')">
+            <div class="ic">ℹ️</div>
+            <h3>App info</h3>
+            <p>About this app</p>
+            <div class="stat">Version 0.1</div>
           </button>
         </div>
 
@@ -480,6 +515,37 @@
         </div>
       </section>
 
+      <!-- ============ APP INFO ============ -->
+      <section class="view" id="appinfo">
+        <div class="appbar">
+          <div class="back" onclick="go('home')">‹</div>
+          <div><h2>App info</h2><div class="sub">About this app</div></div>
+        </div>
+        <div class="body">
+          <div class="card" style="text-align:center">
+            <div class="ribbon" style="width:40px;height:40px;border-radius:11px;margin:4px auto 10px"></div>
+            <h3 style="font-size:19px;font-weight:800">Visma House Oslo</h3>
+            <p style="font-size:13px;color:var(--muted);margin-top:4px">HQ Employee App — interactive concept mockup</p>
+          </div>
+
+          <div class="card">
+            <div class="field"><span class="k">Version</span><span class="v">0.1 · Clickable prototype</span></div>
+            <div class="field"><span class="k">Status</span><span class="v">Concept / mockup</span></div>
+            <div class="field"><span class="k">Brand</span><span class="v">New Visma identity</span></div>
+            <div class="field"><span class="k">Building</span><span class="v">Visma House, Oslo</span></div>
+          </div>
+
+          <div class="sectionTitle" style="margin:6px 0 8px">How to use it</div>
+          <div class="card">
+            <p style="font-size:13px;color:var(--ink-2);line-height:1.5">Tap any service tile or the bottom bar to navigate. Try setting your work location, <b>Tap to pay</b>, <b>Hold to unlock</b> your locker, or book a class or treatment.</p>
+          </div>
+
+          <div class="card" style="background:#F4F0FF;border-color:#E3DBFB">
+            <p style="font-size:12.5px;color:var(--ink-2);line-height:1.5">⚠️ This is a <b>visual concept only</b> — no real data, authentication, or payments. It exists to align stakeholders before the real build.</p>
+          </div>
+        </div>
+      </section>
+
       <!-- ============ MIN SIDE (My Page) ============ -->
       <section class="view" id="minside">
         <div class="appbar">
@@ -593,11 +659,10 @@
     </div>
   </div>
 
-  <p class="hint">Tap any service tile or the bottom bar to navigate. Try <b>Tap to pay</b>, <b>Hold to unlock</b> your locker, or <b>book a massage / desk</b>. This is a visual concept — no real data or payments.</p>
 
 <script>
   /* ---------------- navigation ---------------- */
-  const views = ['home','pay','locker','massage','rooms','minside','pakker','innboks','parking'];
+  const views = ['home','pay','locker','massage','rooms','minside','pakker','innboks','parking','appinfo'];
   function go(id){
     views.forEach(v=>document.getElementById(v).classList.toggle('active', v===id));
     document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
@@ -797,16 +862,22 @@
   /* ---- Work location (synced with Google Calendar) ---- */
   let presence = 'office';   // default reflects today's "Kontor" calendar event
   const PRESENCE = {
-    home:   { event: '«Hjemmekontor»', msg: 'Hjemmekontor' },
-    office: { event: '«Kontor»',       msg: 'På kontoret' },
-    travel: { event: '«På reise»',     msg: 'På reise' },
+    home:   { event: '«Hjemmekontor»', msg: 'Hjemmekontor', ico: '🏠' },
+    office: { event: '«Kontor»',       msg: 'På kontoret',  ico: '🏢' },
+    travel: { event: '«På reise»',     msg: 'På reise',     ico: '✈️' },
   };
+  function toggleStatusCard(){
+    document.getElementById('statusCard').classList.toggle('expanded');
+  }
   function setPresence(p){
     presence = p;
     document.getElementById('presHome').classList.toggle('on', p === 'home');
     document.getElementById('presOffice').classList.toggle('on', p === 'office');
     document.getElementById('presTravel').classList.toggle('on', p === 'travel');
     document.getElementById('presNote').textContent = PRESENCE[p].event;
+    document.getElementById('presSumIco').textContent = PRESENCE[p].ico;
+    document.getElementById('presSumTxt').textContent = PRESENCE[p].msg;
+    document.getElementById('statusCard').classList.remove('expanded');  // collapse after choosing
     toast(PRESENCE[p].msg + ' i dag — oppdatert i Google Calendar');
   }
 
