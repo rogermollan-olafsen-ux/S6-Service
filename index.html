@@ -238,6 +238,16 @@
   .plate{font-family:"Courier New",monospace;font-weight:800;font-size:20px;letter-spacing:2px;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:8px 14px;color:var(--ink);position:relative;padding-left:22px}
   .plate::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#1450C8;border-radius:6px 0 0 6px}
 
+  /* ---- start / sign-in screen ---- */
+  .login{position:absolute;inset:0;z-index:80;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:28px}
+  .login .loginInner{width:100%;max-width:320px}
+  .loginLogo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;justify-content:center;margin-bottom:24px}
+  .login h2{font-size:24px;font-weight:800;text-align:center}
+  .loginLead{text-align:center;color:var(--muted);font-size:13px;margin:6px 0 20px}
+  .login .editInput{margin:0 0 10px}
+  .login .bigBtn{margin-top:6px}
+  .loginNote{font-size:12px;color:var(--muted);line-height:1.5;text-align:center;margin-top:18px}
+
   /* ---- message pop-up (modal) ---- */
   .modal{position:absolute;inset:0;background:rgba(11,11,15,.5);display:none;align-items:center;justify-content:center;padding:28px;z-index:70}
   .modal.show{display:flex}
@@ -275,10 +285,10 @@
       <!-- ============ HOME ============ -->
       <section class="view active" id="home">
         <div class="heroTop">
-          <div class="avatar" onclick="go('minside')">RM<span class="cog">⚙︎</span></div>
+          <div class="avatar" onclick="go('minside')"><span id="avaInitials">RM</span><span class="cog">⚙︎</span></div>
           <div class="who" onclick="go('minside')">
             <div class="hello">Good morning</div>
-            <div class="name">Roger 👋</div>
+            <div class="name" id="greetName">Roger 👋</div>
           </div>
           <div class="bell" onclick="go('innboks')">🔔<span class="badge" id="bellBadge">2</span></div>
         </div>
@@ -576,8 +586,8 @@
         <div class="body">
           <div class="card">
             <div class="profTop">
-              <div class="big">RM</div>
-              <div><h3>Roger Mollan-Olafsen</h3><p>UX Designer · Design &amp; Research</p></div>
+              <div class="big" id="msInitials">RM</div>
+              <div><h3 id="msName">Roger Mollan-Olafsen</h3><p>UX Designer · Design &amp; Research</p></div>
             </div>
           </div>
 
@@ -588,6 +598,7 @@
             <div class="field"><span class="k">Manager</span><span class="v">Kari Nordmann</span></div>
             <div class="field"><span class="k">Office</span><span class="v">Oslo HQ · Floor 6</span></div>
             <div class="field"><span class="k">Email</span><span class="v" style="font-size:12px">roger.mollan-olafsen@visma.com</span></div>
+            <div class="field"><span class="k">Phone</span><span class="v" id="msPhone">—</span></div>
             <div class="srcTag">🔒 Read-only · synced from Org Master</div>
           </div>
 
@@ -682,6 +693,20 @@
           <div class="emptyState" id="inboxEmpty" style="display:none">You're all caught up 🎉</div>
         </div>
       </section>
+
+      <!-- start / sign-in screen (concept: manual entry today, automatic later) -->
+      <div class="login" id="login">
+        <div class="loginInner">
+          <div class="loginLogo"><span class="ribbon"></span> Visma House Oslo</div>
+          <h2>Welcome 👋</h2>
+          <p class="loginLead">Enter your details to try the app.</p>
+          <input class="editInput" id="loginFirst" placeholder="First name" autocomplete="given-name">
+          <input class="editInput" id="loginLast" placeholder="Last name" autocomplete="family-name">
+          <input class="editInput" id="loginPhone" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel">
+          <button class="bigBtn" onclick="startApp()">Continue</button>
+          <p class="loginNote">🔒 In the future you'll be signed in automatically with Visma (Entra ID) — your name and number come across on their own. This step exists only for the concept demo.</p>
+        </div>
+      </div>
 
       <!-- message pop-up -->
       <div class="modal" id="popup">
@@ -908,6 +933,23 @@
   }
   function closePopup(){ document.getElementById('popup').classList.remove('show'); }
 
+  /* ---- start screen: capture name + phone, personalize the app ---- */
+  function startApp(){
+    const fn = document.getElementById('loginFirst').value.trim();
+    const ln = document.getElementById('loginLast').value.trim();
+    const ph = document.getElementById('loginPhone').value.trim();
+    if(!fn){ document.getElementById('loginFirst').focus(); return; }
+    const initials = (fn[0] + (ln[0] || '')).toUpperCase();
+    document.getElementById('avaInitials').textContent = initials;
+    document.getElementById('greetName').textContent = fn + ' 👋';
+    document.getElementById('msInitials').textContent = initials;
+    document.getElementById('msName').textContent = (fn + ' ' + ln).trim();
+    document.getElementById('msPhone').textContent = ph || '—';
+    document.getElementById('login').style.display = 'none';
+    // welcome message once you're in
+    setTimeout(()=>showPopup('🍦','Oslo Office · Slack','Ice cream machine open today','Clearing the freezer before summer break — grab one while supplies last!'), 500);
+  }
+
   function openInbox(el, target){
     if(el.classList.contains('unread')){
       el.classList.remove('unread');
@@ -983,8 +1025,7 @@
   updateBadge();
   applyContext(presence);   // set initial grid to today's status (office)
   hydrate();
-  // Surface the latest important message as a pop-up on the home screen.
-  setTimeout(()=>showPopup('🍦','Oslo Office · Slack','Ice cream machine open today','Clearing the freezer before summer break — grab one while supplies last!'), 700);
+  // Home message pop-up is shown after the user completes the start screen (see startApp).
 </script>
 </body>
 </html>
