@@ -54,7 +54,7 @@
   .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 18px 18px;z-index:60}
 
   /* status bar */
-  .status{display:flex;justify-content:space-between;align-items:center;padding:14px 26px 6px;font-size:12px;font-weight:600;color:var(--ink)}
+  .topPad{height:16px}
   .status .dots{display:flex;gap:5px;align-items:center}
 
   /* generic app header */
@@ -118,6 +118,10 @@
   .tile h3{font-size:15px;font-weight:700}
   .tile p{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
   .tile .stat{margin-top:10px;font-size:12px;font-weight:700;color:var(--red)}
+  .tile .stat.soonStat{color:var(--muted);font-weight:600}
+  /* dimmed = service not usable in the current work-location context */
+  .tile.dim{opacity:.5;pointer-events:none;position:relative}
+  .tile.dim::after{content:"På kontoret";position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;letter-spacing:.02em;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:2px 7px;border-radius:999px}
 
   .soon{padding:0 20px;margin-top:6px}
   .soonCard{background:#fff;border:1px dashed #d7d7e0;border-radius:18px;padding:14px 16px;display:flex;gap:12px;align-items:center;color:var(--muted)}
@@ -172,8 +176,8 @@
   .seg.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 
   /* confirmation toast */
-  .toast{position:absolute;left:20px;right:20px;bottom:96px;background:var(--ink);color:#fff;border-radius:14px;padding:14px 16px;display:flex;gap:10px;align-items:center;font-size:13px;font-weight:600;transform:translateY(140%);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:55;box-shadow:0 14px 30px rgba(0,0,0,.3)}
-  .toast.show{transform:translateY(0)}
+  .toast{position:absolute;left:20px;right:20px;bottom:96px;background:var(--ink);color:#fff;border-radius:14px;padding:14px 16px;display:flex;gap:10px;align-items:center;font-size:13px;font-weight:600;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .3s ease, transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:55;box-shadow:0 14px 30px rgba(0,0,0,.3)}
+  .toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
   .toast .ok{width:24px;height:24px;border-radius:50%;background:var(--red);display:grid;place-items:center;font-size:13px;flex-shrink:0}
 
   /* bottom nav */
@@ -234,14 +238,23 @@
   .plate{font-family:"Courier New",monospace;font-weight:800;font-size:20px;letter-spacing:2px;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:8px 14px;color:var(--ink);position:relative;padding-left:22px}
   .plate::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:#1450C8;border-radius:6px 0 0 6px}
 
+  /* ---- message pop-up (modal) ---- */
+  .modal{position:absolute;inset:0;background:rgba(11,11,15,.5);display:none;align-items:center;justify-content:center;padding:28px;z-index:70}
+  .modal.show{display:flex}
+  .modalCard{background:#fff;border-radius:22px;padding:24px 22px;width:100%;max-width:290px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4);animation:popIn .25s ease}
+  .modalIco{font-size:40px;line-height:1}
+  .modalSrc{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--muted);margin-top:8px}
+  .modalCard h3{font-size:18px;font-weight:800;margin-top:4px}
+  .modalCard p{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:8px 0 18px}
+  @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+
   /* ---- Phone / web-app mode: fill the screen, drop the desktop frame ---- */
   @media (max-width:480px){
     body{padding:0;background:var(--bg)}
     .pageHead,.hint{display:none}
     .phone{width:100%;max-width:100%;height:100vh;height:100dvh;padding:0;border-radius:0;box-shadow:none;background:var(--bg)}
     .screen{border-radius:0;height:100vh;height:100dvh}
-    .notch{display:none}
-    .status{padding-top:calc(14px + env(safe-area-inset-top))}
+    .topPad{height:calc(6px + env(safe-area-inset-top))}
     .nav{padding-bottom:calc(8px + env(safe-area-inset-bottom))}
   }
 </style>
@@ -254,13 +267,10 @@
   </div>
 
   <div class="phone">
-    <div class="notch"></div>
     <div class="screen">
 
-      <div class="status">
-        <span>9:41</span>
-        <span class="dots">●●● &nbsp; 📶 &nbsp; 🔋</span>
-      </div>
+      <!-- top spacer (real device shows its own clock/status) -->
+      <div class="topPad" aria-hidden="true"></div>
 
       <!-- ============ HOME ============ -->
       <section class="view active" id="home">
@@ -289,64 +299,75 @@
           </div>
         </div>
 
-        <div class="sectionTitle">Services for Visma House Oslo</div>
-        <div class="grid">
-          <button class="tile" onclick="go('pay')">
+        <div class="sectionTitle" id="servicesTitle">Services for Visma House Oslo</div>
+        <div class="grid" id="serviceGrid">
+          <button class="tile" data-key="pay" onclick="go('pay')">
             <div class="ic">💳</div>
             <h3>Pay</h3>
             <p>Cafeteria, shop & vending</p>
             <div class="stat" id="payStat">kr 248,00 available</div>
           </button>
-          <button class="tile" onclick="go('locker')">
+          <button class="tile" data-key="lockers" onclick="go('locker')">
             <div class="ic">🔐</div>
             <h3>Lockers</h3>
             <p>Unlock your personal locker</p>
             <div class="stat">Locker B-114</div>
           </button>
-          <button class="tile" onclick="go('massage')">
+          <button class="tile" data-key="wellness" onclick="go('massage')">
             <div class="ic">🧘</div>
             <h3>Health &amp; Wellness</h3>
             <p>Classes &amp; treatments</p>
             <div class="stat">4 classes · 3 treatments today</div>
           </button>
-          <button class="tile" onclick="go('rooms')">
+          <button class="tile" data-key="rooms" onclick="go('rooms')">
             <div class="ic">🪑</div>
             <h3>Rooms & Desks</h3>
             <p>Reserve a space</p>
             <div class="stat">12 desks free</div>
           </button>
-          <button class="tile" onclick="go('pakker')">
+          <button class="tile" data-key="packages" onclick="go('pakker')">
             <div class="ic">📦</div>
             <h3>Packages</h3>
             <p>Parcels waiting for you</p>
             <div class="stat" id="pkgStat">1 ready to collect</div>
           </button>
-          <button class="tile" onclick="go('parking')">
+          <button class="tile" data-key="parking" onclick="go('parking')">
             <div class="ic">🅿️</div>
             <h3>Parking</h3>
             <p>Bike &amp; car</p>
             <div class="stat">Car: EL 34921</div>
           </button>
-          <button class="tile" onclick="go('appinfo')">
+          <!-- context placeholders (coming soon) -->
+          <button class="tile" data-key="lunch" onclick="toast('Lunch pre-order — coming soon')">
+            <div class="ic">🍽️</div>
+            <h3>Lunch pre-order</h3>
+            <p>Order ahead</p>
+            <div class="stat soonStat">Coming soon</div>
+          </button>
+          <button class="tile" data-key="it" onclick="toast('IT support — coming soon')">
+            <div class="ic">🛠️</div>
+            <h3>IT support</h3>
+            <p>Get help</p>
+            <div class="stat soonStat">Coming soon</div>
+          </button>
+          <button class="tile" data-key="expenses" onclick="toast('Expenses &amp; timesheet — coming soon')">
+            <div class="ic">🧾</div>
+            <h3>Expenses &amp; hours</h3>
+            <p>Timesheet & receipts</p>
+            <div class="stat soonStat">Coming soon</div>
+          </button>
+          <button class="tile" data-key="itinerary" onclick="toast('Travel & itinerary — coming soon')">
+            <div class="ic">🧳</div>
+            <h3>Travel &amp; itinerary</h3>
+            <p>Trips & tickets</p>
+            <div class="stat soonStat">Coming soon</div>
+          </button>
+          <button class="tile" data-key="appinfo" onclick="go('appinfo')">
             <div class="ic">ℹ️</div>
             <h3>App info</h3>
             <p>About this app</p>
             <div class="stat">Version 0.1</div>
           </button>
-        </div>
-
-        <div class="sectionTitle">Coming soon</div>
-        <div class="soon">
-          <div class="soonCard">
-            <div class="ic">🍽️</div>
-            <div><h3>Lunch menu & pre-order</h3></div>
-            <span>Soon</span>
-          </div>
-          <div class="soonCard" style="margin-top:10px">
-            <div class="ic">🍃</div>
-            <div><h3>Sustainability & CO₂ dashboard</h3></div>
-            <span>Soon</span>
-          </div>
         </div>
       </section>
 
@@ -618,25 +639,42 @@
           <div><h2>Inbox</h2><div class="sub">All your notifications</div></div>
         </div>
         <div class="body">
-          <div class="seg-row">
-            <div class="seg on">All</div><div class="seg">Action needed</div><div class="seg">Info</div>
+          <div class="seg-row" id="inboxFilters">
+            <div class="seg on" onclick="filterInbox(this,'all')">All</div>
+            <div class="seg" onclick="filterInbox(this,'action')">Action needed</div>
+            <div class="seg" onclick="filterInbox(this,'info')">Info</div>
+            <div class="seg" onclick="filterInbox(this,'oslo')">Oslo Office</div>
           </div>
           <div id="inboxList">
-            <div class="inboxItem unread" onclick="openInbox(this,'pakker')">
+            <div class="inboxItem unread" data-cat="oslo" onclick="openInbox(this,'')">
+              <div class="ii">💬</div>
+              <div class="ibody"><b>Ice cream machine open today</b><p>Clearing the freezer before summer break — grab one while it lasts 🍦</p><small>Oslo Office · Slack · 12 min ago</small></div>
+              <div class="udot"></div>
+            </div>
+            <div class="inboxItem unread" data-cat="oslo" onclick="openInbox(this,'')">
+              <div class="ii">💬</div>
+              <div class="ibody"><b>9th floor phone pods — maintenance</b><p>Unavailable tomorrow morning. Please use the pods on other floors.</p><small>Oslo Office · Slack · 1 h ago</small></div>
+              <div class="udot"></div>
+            </div>
+            <div class="inboxItem" data-cat="oslo" onclick="openInbox(this,'')">
+              <div class="ii">💬</div>
+              <div class="ibody"><b>Parking spot wanted</b><p>"Anyone have a spare parking spot this Thursday?"</p><small>Oslo Office · Slack · yesterday</small></div>
+            </div>
+            <div class="inboxItem unread" data-cat="action" onclick="openInbox(this,'pakker')">
               <div class="ii">📦</div>
               <div class="ibody"><b>Parcel ready to collect</b><p>PostNord parcel in smart locker P-07. Code 4192.</p><small>Packages · 9 min ago</small></div>
               <div class="udot"></div>
             </div>
-            <div class="inboxItem unread" onclick="openInbox(this,'massage')">
+            <div class="inboxItem unread" data-cat="action" onclick="openInbox(this,'massage')">
               <div class="ii">💆</div>
               <div class="ibody"><b>Massage reminder</b><p>Your session is today at 13:00 in the wellness room.</p><small>Wellness · 1 h ago</small></div>
               <div class="udot"></div>
             </div>
-            <div class="inboxItem" onclick="openInbox(this,'pay')">
+            <div class="inboxItem" data-cat="info" onclick="openInbox(this,'pay')">
               <div class="ii">💳</div>
               <div class="ibody"><b>Payment receipt</b><p>kr 39,00 at Barista Bar.</p><small>Pay · today 08:32</small></div>
             </div>
-            <div class="inboxItem" onclick="openInbox(this,'locker')">
+            <div class="inboxItem" data-cat="info" onclick="openInbox(this,'locker')">
               <div class="ii">🔐</div>
               <div class="ibody"><b>Locker unlocked</b><p>Locker B-114 was opened.</p><small>Lockers · today 08:30</small></div>
             </div>
@@ -644,6 +682,17 @@
           <div class="emptyState" id="inboxEmpty" style="display:none">You're all caught up 🎉</div>
         </div>
       </section>
+
+      <!-- message pop-up -->
+      <div class="modal" id="popup">
+        <div class="modalCard">
+          <div class="modalIco" id="popupIco">💬</div>
+          <div class="modalSrc" id="popupSrc">Oslo Office · Slack</div>
+          <h3 id="popupTitle">Message</h3>
+          <p id="popupBody"></p>
+          <button class="bigBtn" onclick="closePopup()">OK</button>
+        </div>
+      </div>
 
       <!-- toast -->
       <div class="toast" id="toast"><div class="ok">✓</div><span id="toastMsg">Done</span></div>
@@ -677,7 +726,7 @@
     document.getElementById('toastMsg').textContent=msg;
     t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+    toastTimer=setTimeout(()=>t.classList.remove('show'),8000);
   }
 
   /* ---------------- API layer (graceful fallback) ----------------
@@ -841,6 +890,24 @@
     document.getElementById('inboxEmpty').style.display =
       document.querySelectorAll('#inboxList .inboxItem').length ? 'none' : 'block';
   }
+  function filterInbox(el, cat){
+    document.querySelectorAll('#inboxFilters .seg').forEach(s=>s.classList.remove('on'));
+    el.classList.add('on');
+    document.querySelectorAll('#inboxList .inboxItem').forEach(it=>{
+      it.style.display = (cat === 'all' || it.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+
+  /* ---- home message pop-up (OK to dismiss) ---- */
+  function showPopup(ico, src, title, body){
+    document.getElementById('popupIco').textContent = ico;
+    document.getElementById('popupSrc').textContent = src;
+    document.getElementById('popupTitle').textContent = title;
+    document.getElementById('popupBody').textContent = body;
+    document.getElementById('popup').classList.add('show');
+  }
+  function closePopup(){ document.getElementById('popup').classList.remove('show'); }
+
   function openInbox(el, target){
     if(el.classList.contains('unread')){
       el.classList.remove('unread');
@@ -878,7 +945,30 @@
     document.getElementById('presSumIco').textContent = PRESENCE[p].ico;
     document.getElementById('presSumTxt').textContent = PRESENCE[p].msg;
     document.getElementById('statusCard').classList.remove('expanded');  // collapse after choosing
+    applyContext(p);
     toast(PRESENCE[p].msg + ' i dag — oppdatert i Google Calendar');
+  }
+
+  /* ---- Context-aware service grid: reorder + dim by work location ---- */
+  const CONTEXT = {
+    office: { order:['pay','rooms','wellness','lockers','packages','parking','lunch','it','expenses'], dim:[] },
+    home:   { order:['rooms','wellness','parking','packages','lunch','it','expenses','pay','lockers'], dim:['pay','lockers'] },
+    travel: { order:['expenses','itinerary','it','pay','packages','lockers','rooms','wellness','parking'], dim:['lockers','rooms','wellness','parking'] },
+  };
+  function applyContext(p){
+    const grid = document.getElementById('serviceGrid');
+    if(!grid) return;
+    const cfg = CONTEXT[p] || CONTEXT.office;
+    grid.querySelectorAll('.tile').forEach(t=>{ t.style.display='none'; t.classList.remove('dim'); });
+    cfg.order.forEach(key=>{
+      const t = grid.querySelector('.tile[data-key="'+key+'"]');
+      if(!t) return;
+      t.style.display='';
+      if(cfg.dim.includes(key)) t.classList.add('dim');
+      grid.appendChild(t);              // move into context order
+    });
+    const info = grid.querySelector('.tile[data-key="appinfo"]');
+    if(info){ info.style.display=''; grid.appendChild(info); }   // App info always last
   }
 
   /* ---- Parking: switch Bike / Car ---- */
@@ -891,7 +981,10 @@
   }
 
   updateBadge();
+  applyContext(presence);   // set initial grid to today's status (office)
   hydrate();
+  // Surface the latest important message as a pop-up on the home screen.
+  setTimeout(()=>showPopup('🍦','Oslo Office · Slack','Ice cream machine open today','Clearing the freezer before summer break — grab one while supplies last!'), 700);
 </script>
 </body>
 </html>
