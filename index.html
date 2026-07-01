@@ -129,6 +129,13 @@
   .soonCard h3{font-size:14px;color:var(--ink-2)}
   .soonCard span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a6a6b2;margin-left:auto}
 
+  /* payment method buttons */
+  .payMethod{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:14px;font-size:16px;font-weight:800;padding:15px;cursor:pointer;margin-top:10px;color:#fff;transition:.15s}
+  .payMethod.applepay{background:#000}
+  .payMethod.vipps{background:#FF5B24}
+  .payMethod:active{transform:scale(.99)}
+  .payMethod:hover{filter:brightness(1.08)}
+
   /* ---------- generic cards ---------- */
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
   .bigBtn{width:100%;border:none;background:var(--brand);color:#fff;font-weight:800;font-size:16px;padding:16px;border-radius:16px;cursor:pointer;transition:.15s;box-shadow:0 10px 22px rgba(127,86,250,.30)}
@@ -315,7 +322,7 @@
             <div class="ic">💳</div>
             <h3>Pay</h3>
             <p>Cafeteria, shop & vending</p>
-            <div class="stat" id="payStat">kr 248,00 available</div>
+            <div class="stat" style="color:var(--muted);font-weight:600">Apple Pay · Vipps</div>
           </button>
           <button class="tile" data-key="lockers" onclick="go('locker')">
             <div class="ic">🔐</div>
@@ -366,11 +373,11 @@
             <p>Timesheet & receipts</p>
             <div class="stat soonStat">Coming soon</div>
           </button>
-          <button class="tile" data-key="itinerary" onclick="toast('Travel & itinerary — coming soon')">
+          <button class="tile" data-key="itinerary" onclick="go('travel')">
             <div class="ic">🧳</div>
             <h3>Travel &amp; itinerary</h3>
             <p>Trips & tickets</p>
-            <div class="stat soonStat">Coming soon</div>
+            <div class="stat soonStat">Tap to set up</div>
           </button>
           <button class="tile" data-key="appinfo" onclick="go('appinfo')">
             <div class="ic">ℹ️</div>
@@ -385,31 +392,21 @@
       <section class="view" id="pay">
         <div class="appbar">
           <div class="back" onclick="go('home')">‹</div>
-          <div><h2>Pay</h2><div class="sub">HQ Wallet</div></div>
+          <div><h2>Pay</h2><div class="sub">Café · Shop · Vending</div></div>
         </div>
         <div class="body">
-          <div class="balanceCard" style="margin:0 0 14px">
-            <div class="glow"></div>
-            <small>AVAILABLE BALANCE</small>
-            <div class="amt" id="balancePay">kr 248,00</div>
-            <div class="row">
-              <span style="font-size:12px;opacity:.9">Auto top-up · on</span>
-              <span class="chip">+ Top up</span>
-            </div>
-          </div>
-
-          <div class="card paySheet">
-            <div class="nfc">📡</div>
-            <h3 style="font-size:17px;font-weight:800">Hold near the reader</h3>
-            <p style="color:var(--muted);font-size:13px;margin:6px 0 16px">Cafeteria · Shop · Vending machines</p>
-            <button class="bigBtn" onclick="pay()">Tap to pay</button>
+          <div class="card">
+            <h3 style="font-size:16px;font-weight:800">How would you like to pay?</h3>
+            <p style="color:var(--muted);font-size:13px;margin:4px 0 14px">Choose a method, then hold your phone near the reader.</p>
+            <button class="payMethod applepay" onclick="payWith('Apple Pay')">Apple Pay</button>
+            <button class="payMethod vipps" onclick="payWith('Vipps')">Vipps</button>
           </div>
 
           <div class="sectionTitle" style="margin:6px 0 10px">Recent</div>
           <div class="card" style="padding:6px 18px" id="txnList">
-            <div class="txn"><div class="ti">☕</div><div class="tinfo"><b>Barista Bar</b><small>Today · 08:32</small></div><div class="amt">−kr 39</div></div>
-            <div class="txn"><div class="ti">🥗</div><div class="tinfo"><b>Cafeteria lunch</b><small>Yesterday · 11:50</small></div><div class="amt">−kr 89</div></div>
-            <div class="txn"><div class="ti">＋</div><div class="tinfo"><b>Top-up · Visa ••42</b><small>Mon · 09:10</small></div><div class="amt" style="color:#108a4b">+kr 300</div></div>
+            <div class="txn"><div class="ti">☕</div><div class="tinfo"><b>Barista Bar</b><small>Apple Pay · Today · 08:32</small></div><div class="amt">−kr 39</div></div>
+            <div class="txn"><div class="ti">🥗</div><div class="tinfo"><b>Cafeteria lunch</b><small>Vipps · Yesterday · 11:50</small></div><div class="amt">−kr 89</div></div>
+            <div class="txn"><div class="ti">🥤</div><div class="tinfo"><b>Vending machine</b><small>Apple Pay · Mon · 15:20</small></div><div class="amt">−kr 25</div></div>
           </div>
         </div>
       </section>
@@ -543,6 +540,71 @@
               <button class="bigBtn" style="margin-top:12px" onclick="toast('Car registered · pending approval')">Register &amp; join scheme</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ============ TRAVEL & ITINERARY ============ -->
+      <section class="view" id="travel">
+        <div class="appbar">
+          <div class="back" onclick="go('home')">‹</div>
+          <div><h2>Travel &amp; itinerary</h2><div class="sub">Trips &amp; tickets</div></div>
+        </div>
+        <div class="body">
+
+          <!-- Setup: choose provider -->
+          <div id="travelSetup">
+            <div class="card">
+              <div class="profTop" style="margin-bottom:12px">
+                <div class="big" style="background:linear-gradient(135deg,#4A4608,#6b661a)">🧳</div>
+                <div><h3 style="font-size:17px">Set up travel</h3><p style="font-size:12px;color:var(--muted)">Per company · S6 has 27 companies</p></div>
+              </div>
+              <p style="font-size:13px;color:var(--ink-2);line-height:1.5">Travel is arranged by each company, and they don't all use the same service. Connect yours to see your trips here.</p>
+              <p style="font-weight:800;margin:16px 0 8px">Do you use Navan?</p>
+              <button class="bigBtn" onclick="travelSetup('navan')">Yes — connect Navan</button>
+              <button class="bigBtn ghost" style="margin-top:10px" onclick="travelSetup('other')">No / another provider</button>
+            </div>
+          </div>
+
+          <!-- Other provider list -->
+          <div id="travelOther" style="display:none">
+            <div class="card">
+              <h3 style="font-size:16px;font-weight:800">Your company's travel service</h3>
+              <p style="font-size:12.5px;color:var(--muted);margin:4px 0 12px">Pick your provider to connect.</p>
+              <div class="slot" onclick="travelPick('Berg-Hansen')"><div class="time">🧳</div><div class="meta"><b>Berg-Hansen</b>Nordic travel agency</div><div class="pickBtn">Connect →</div></div>
+              <div class="slot" onclick="travelPick('Egencia')"><div class="time">🧳</div><div class="meta"><b>Egencia</b>Business travel</div><div class="pickBtn">Connect →</div></div>
+              <div class="slot" onclick="travelPick('Amex GBT')"><div class="time">🧳</div><div class="meta"><b>American Express GBT</b>Business travel</div><div class="pickBtn">Connect →</div></div>
+              <div class="slot" onclick="travelPick('another provider')"><div class="time">➕</div><div class="meta"><b>Other / not listed</b>Ask your travel admin</div><div class="pickBtn">Select →</div></div>
+            </div>
+            <p class="srcTag" style="padding:0 4px;cursor:pointer" onclick="travelReset()">‹ Back</p>
+          </div>
+
+          <!-- Connected: Navan itinerary -->
+          <div id="travelConnected" style="display:none">
+            <div class="card">
+              <div class="statusPill" style="margin-bottom:12px"><span class="dot"></span> Connected to Navan</div>
+              <h3 style="font-size:17px;font-weight:800">Next trip · Stockholm</h3>
+              <p style="font-size:12.5px;color:var(--muted);margin-top:2px">Wed 8 – Fri 10 July</p>
+            </div>
+            <div class="card">
+              <div class="field"><span class="k">✈️ Outbound</span><span class="v">SK4707 · OSL 08:20 → ARN 09:25</span></div>
+              <div class="field"><span class="k">🏨 Hotel</span><span class="v">Downtown Camper · 2 nights</span></div>
+              <div class="field"><span class="k">✈️ Return</span><span class="v">SK4718 · ARN 17:40 → OSL 18:45</span></div>
+              <div class="field"><span class="k">🧾 Trip expenses</span><span class="v">kr 1 240 · 3 items</span></div>
+            </div>
+            <button class="bigBtn ghost" onclick="toast('Opening Navan…')">Manage trip in Navan</button>
+            <p class="srcTag" style="padding:8px 4px 0;cursor:pointer" onclick="travelReset()">Change travel provider</p>
+          </div>
+
+          <!-- Other provider selected (not connected in concept) -->
+          <div id="travelPending" style="display:none">
+            <div class="card" style="text-align:center">
+              <div class="ic" style="margin:2px auto 10px">🧳</div>
+              <h3 style="font-size:17px;font-weight:800"><span id="travelProviderName">Provider</span></h3>
+              <p style="font-size:13px;color:var(--ink-2);line-height:1.5;margin-top:6px">This provider isn't connected in the concept yet. Your company's travel admin can set up the integration.</p>
+              <button class="bigBtn ghost" style="margin-top:16px" onclick="travelReset()">Choose a different provider</button>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -736,7 +798,7 @@
 
 <script>
   /* ---------------- navigation ---------------- */
-  const views = ['home','pay','locker','massage','rooms','minside','pakker','innboks','parking','appinfo'];
+  const views = ['home','pay','locker','massage','rooms','minside','pakker','innboks','parking','appinfo','travel'];
   function go(id){
     views.forEach(v=>document.getElementById(v).classList.toggle('active', v===id));
     document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));
@@ -842,16 +904,8 @@
   function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   /* ---------------- actions ---------------- */
-  async function pay(){
-    if(LIVE){
-      try{
-        const w = await api('/api/wallet/pay', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({merchant:'Barista Bar', amount_ore:3900})});
-        setBalance(w.balance_ore);
-        renderTxns(await api('/api/wallet/transactions'));
-        toast('Paid kr 39,00 at Barista Bar'); return;
-      }catch(e){ toast('Payment failed'); return; }
-    }
-    toast('Paid kr 39,00 at Barista Bar');
+  function payWith(method){
+    toast('Paid kr 39,00 at Barista Bar with ' + method);
   }
 
   // static fallback booking (used when offline; inline onclick=book(this,...))
@@ -993,8 +1047,8 @@
 
   /* ---- Context-aware service grid: reorder + dim by work location ---- */
   const CONTEXT = {
-    office: { order:['pay','rooms','wellness','lockers','packages','parking','lunch','it','expenses'], dim:[] },
-    home:   { order:['rooms','wellness','parking','packages','lunch','it','expenses','pay','lockers'], dim:['pay','lockers'] },
+    office: { order:['pay','rooms','wellness','lockers','packages','parking','lunch','it','expenses','itinerary'], dim:[] },
+    home:   { order:['rooms','wellness','parking','packages','lunch','it','expenses','itinerary','pay','lockers'], dim:['pay','lockers'] },
     travel: { order:['expenses','itinerary','it','pay','packages','lockers','rooms','wellness','parking'], dim:['lockers','rooms','wellness','parking'] },
   };
   function applyContext(p){
@@ -1012,6 +1066,22 @@
     const info = grid.querySelector('.tile[data-key="appinfo"]');
     if(info){ info.style.display=''; grid.appendChild(info); }   // App info always last
   }
+
+  /* ---- Travel: provider activation (per company) ---- */
+  function travelShow(id){
+    ['travelSetup','travelOther','travelConnected','travelPending'].forEach(v=>{
+      document.getElementById(v).style.display = (v === id) ? '' : 'none';
+    });
+  }
+  function travelSetup(choice){
+    if(choice === 'navan'){ travelShow('travelConnected'); toast('Connected to Navan'); }
+    else { travelShow('travelOther'); }
+  }
+  function travelPick(provider){
+    document.getElementById('travelProviderName').textContent = provider;
+    travelShow('travelPending');
+  }
+  function travelReset(){ travelShow('travelSetup'); }
 
   /* ---- Parking: switch Bike / Car ---- */
   function switchParking(mode){
